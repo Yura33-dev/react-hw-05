@@ -1,0 +1,123 @@
+import { useEffect, useState } from 'react';
+import { NavLink, Outlet, useParams } from 'react-router-dom';
+import { ColorRing } from 'react-loader-spinner';
+import toast from 'react-hot-toast';
+
+import { getMovie, imagePathBase } from '../../api/tmdb';
+
+function MovieDetailsPage() {
+  const [movie, setMovie] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
+  const { movieId } = useParams();
+
+  useEffect(() => {
+    async function fetchFilm() {
+      setLoading(true);
+      setError(false);
+      try {
+        const fetchMovie = await getMovie(movieId);
+        setMovie(fetchMovie);
+      } catch (e) {
+        setError(true);
+        toast.error(e.message, {
+          position: 'top-right',
+        });
+      }
+      setLoading(false);
+    }
+
+    fetchFilm();
+  }, [movieId]);
+
+  const genresString = movie.genres
+    ? movie.genres.map(genre => genre.name).join(', ')
+    : 'Loading...';
+
+  const producersString = movie.production_companies
+    ? movie.production_companies.map(prod => prod.name).join(', ')
+    : 'Loading...';
+
+  const overviewString =
+    movie.overview?.length > 320
+      ? movie.overview.slice(0, 320) + '...'
+      : movie.overview;
+
+  return (
+    <div className="container mx-auto max-w-[700px]">
+      {loading && (
+        <ColorRing
+          visible={true}
+          height="100"
+          width="100"
+          ariaLabel="color-ring-loading"
+          wrapperStyle={{}}
+          wrapperClass="color-ring-wrapper mx-auto"
+          colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
+        />
+      )}
+      {!loading && !error && (
+        <>
+          <h1 className="text-6xl my-6 font-bold">{movie.title}</h1>
+          <div className="main-info flex gap-7">
+            <div className="img-wrapper h-96 flex-[0_0_16rem]">
+              <img
+                src={imagePathBase + movie.poster_path}
+                alt={movie.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="info flex-col w-full">
+              <div className="tagline flex mb-5">
+                <span className="key font-semibold flex-[1_1_30%]">
+                  Tagline:
+                </span>
+                <span className="value flex-[1_1_70%]">{movie.tagline}</span>
+              </div>
+
+              <div className="genre flex mb-5">
+                <span className="key font-semibold flex-[1_1_30%]">Genre:</span>
+                <span className="value flex-[1_1_70%]">{genresString}</span>
+              </div>
+
+              <div className="producers flex mb-5">
+                <span className="key font-semibold flex-[1_1_30%]">
+                  Producers:
+                </span>
+                <span className="value flex-[1_1_70%]">{producersString}</span>
+              </div>
+
+              <div className="overview flex mb-5">
+                <span className="key font-semibold flex-[1_1_30%]">
+                  Overview:
+                </span>
+                <span className="value flex-[1_1_70%] max-h-56 overflow-hidden">
+                  {overviewString}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="additional-info mt-8 flex justify-evenly items-center">
+            <NavLink
+              to={'cast'}
+              className="bg-violet-400 p-4 rounded-md text-white transition-colors duration-150 hover:bg-violet-500"
+            >
+              Show cast
+            </NavLink>
+            <NavLink
+              to={'reviews'}
+              className="bg-violet-400 p-4 rounded-md text-white transition-colors duration-150 hover:bg-violet-500"
+            >
+              Show Reviews
+            </NavLink>
+          </div>
+
+          <Outlet />
+        </>
+      )}
+    </div>
+  );
+}
+
+export default MovieDetailsPage;

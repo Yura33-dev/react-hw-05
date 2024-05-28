@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ColorRing } from 'react-loader-spinner';
+import toast from 'react-hot-toast';
 
 import { getTrendingMovies } from '../../api/tmdb';
 import MovieItem from '../MovieItem/MovieItem';
@@ -17,8 +18,10 @@ function MovieList() {
         console.log(getMovies);
         setMovies(getMovies.results);
       } catch (e) {
-        setError(e);
-        console.log(e);
+        setError(true);
+        toast.error(e.message, {
+          position: 'top-right',
+        });
       }
       setLoading(false);
     }
@@ -28,7 +31,7 @@ function MovieList() {
 
   return (
     <div className="container mx-auto px-5">
-      <h1 className="text-6xl my-10 font-bold">Trending today</h1>
+      <h1 className="text-6xl my-6 font-bold">Trending today</h1>
       {loading && (
         <ColorRing
           visible={true}
@@ -41,11 +44,12 @@ function MovieList() {
         />
       )}
       {!loading && !error && (
-        <ul className="flex gap-5 flex-wrap bg-violet-100 p-8 rounded-xl">
+        <ul className="flex gap-5 flex-wrap bg-violet-100 py-8 px-6 rounded-xl">
           {movies.map(movie => (
             <li
               key={movie.id}
-              className="flex-auto basis-1/5 bg-white rounded-lg"
+              className="flex-auto basis-full sm:basis-1/3 lg:basis-1/4 
+              xl:basis-1/5 2xl:basis-1/6 bg-white rounded-lg"
             >
               <MovieItem movie={movie} />
             </li>
