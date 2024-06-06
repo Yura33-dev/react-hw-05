@@ -1,6 +1,6 @@
 function MoviesPage() {
   return (
-    <main className="flex justify-center items-start h-[100vh] mt-10">
+    <main className="flex justify-center items-start h-[100vh] mt-16 ">
       <form className="flex w-1/2">
         <input
           type="text"

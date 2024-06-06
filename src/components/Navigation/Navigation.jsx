@@ -4,7 +4,7 @@ function Navigation() {
   return (
     <header
       className="bg-violet-500 text-neutral-200 text-xl 
-        font-semibold shadow-md"
+        font-semibold shadow-md fixed top-0 right-0 w-full z-10"
     >
       <div className="container">
         <nav className="flex gap-x-8 *:p-3">

@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { imagePathBase } from '../../api/tmdb';
 
 function MovieItem({ movie }) {
   return (
@@ -16,13 +17,14 @@ function MovieItem({ movie }) {
             </div>
           )}
           <img
-            src={'https://image.tmdb.org/t/p/w500' + movie.poster_path}
+            src={imagePathBase + '/' + movie.poster_path}
             alt={movie.title}
             className="w-full h-full object-cover"
           />
           <div
             className="rating rounded-md text-neutral-100 text-xl
-        bg-slate-800/70 px-8 py-3 absolute bottom-2 left-[50%] translate-x-[-50%]"
+        bg-slate-800/70 px-8 py-3 absolute bottom-2 left-[50%] translate-x-[-50%]
+        2xl:py-2 2xl:px-4"
           >
             Rate:{' '}
             <span className="text-yellow-400">

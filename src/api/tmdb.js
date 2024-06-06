@@ -35,3 +35,19 @@ function getPopularityCast(cast, maxNumberOfCast = 5) {
 
   return sortedCast.slice(0, maxNumberOfCast);
 }
+
+export async function getMoviesReviews(movieId) {
+  const response = await fetch(`${base}/movie/${movieId}/reviews`, options);
+  const reviews = await response.json();
+
+  const result = reviews.results.map(review => {
+    return {
+      id: review.id,
+      author: review.author,
+      content: review.content,
+      rating: review.author_details.rating,
+    };
+  });
+
+  return result;
+}

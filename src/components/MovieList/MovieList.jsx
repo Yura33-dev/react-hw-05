@@ -5,17 +5,18 @@ import toast from 'react-hot-toast';
 import { getTrendingMovies } from '../../api/tmdb';
 import MovieItem from '../MovieItem/MovieItem';
 
+import useLoad from '../../hooks/useLoad';
+
 function MovieList() {
   const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const { loading, setLoading, error, setError } = useLoad();
 
   useEffect(() => {
     async function fetchTrendMovies() {
       setLoading(true);
+      setError(false);
       try {
         const getMovies = await getTrendingMovies();
-        console.log(getMovies);
         setMovies(getMovies.results);
       } catch (e) {
         setError(true);
