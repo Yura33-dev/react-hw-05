@@ -1,10 +1,17 @@
-import { useEffect, useState } from 'react';
-import { NavLink, Outlet, useParams } from 'react-router-dom';
+import { Suspense, useEffect, useState } from 'react';
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useLocation,
+  useParams,
+} from 'react-router-dom';
 import { ColorRing } from 'react-loader-spinner';
 import toast from 'react-hot-toast';
 
-import { getMovie, imagePathBase } from '../../api/tmdb';
+import { getMovieById, imagePathBase } from '../../api/tmdb';
 import useLoad from '../../hooks/useLoad';
+import { HiMiniArrowLongLeft } from 'react-icons/hi2';
 
 function MovieDetailsPage() {
   const [movie, setMovie] = useState({});
@@ -12,12 +19,14 @@ function MovieDetailsPage() {
 
   const { movieId } = useParams();
 
+  const location = useLocation();
+
   useEffect(() => {
     async function fetchFilm() {
       setLoading(true);
       setError(false);
       try {
-        const fetchMovie = await getMovie(movieId);
+        const fetchMovie = await getMovieById(movieId);
         setMovie(fetchMovie);
       } catch (e) {
         setError(true);
@@ -60,6 +69,14 @@ function MovieDetailsPage() {
         )}
         {!loading && !error && (
           <>
+            <Link
+              to={location.state ?? '/movies'}
+              type="buttom"
+              className="flex items-center gap-4 bg-violet-300 max-w-[max-content] py-3 px-6 rounded-md
+              hover:bg-violet-400 hover:text-white duration-150"
+            >
+              <HiMiniArrowLongLeft /> Back to films
+            </Link>
             <h1 className="text-6xl my-6 font-bold">{movie.title}</h1>
             <div className="main-info flex gap-7">
               <div className="img-wrapper h-96 flex-[0_0_16rem]">
@@ -110,19 +127,41 @@ function MovieDetailsPage() {
             <div className="additional-info mt-8 flex justify-evenly items-center">
               <NavLink
                 to={'cast'}
+                state={location.state ?? '/movies'}
                 className="bg-violet-400 p-4 rounded-md text-white transition-colors duration-150 hover:bg-violet-500"
               >
                 Show cast
               </NavLink>
               <NavLink
                 to={'reviews'}
+                state={location.state ?? '/movies'}
                 className="bg-violet-400 p-4 rounded-md text-white transition-colors duration-150 hover:bg-violet-500"
               >
                 Show Reviews
               </NavLink>
             </div>
 
-            <Outlet />
+            <Suspense
+              fallback={
+                <ColorRing
+                  visible={true}
+                  height="100"
+                  width="100"
+                  ariaLabel="color-ring-loading"
+                  wrapperStyle={{}}
+                  wrapperClass="color-ring-wrapper mx-auto"
+                  colors={[
+                    '#e15b64',
+                    '#f47e60',
+                    '#f8b26a',
+                    '#abbd81',
+                    '#849b87',
+                  ]}
+                />
+              }
+            >
+              <Outlet />
+            </Suspense>
           </>
         )}
       </div>

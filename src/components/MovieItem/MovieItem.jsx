@@ -1,11 +1,13 @@
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { imagePathBase } from '../../api/tmdb';
 
 function MovieItem({ movie }) {
+  const location = useLocation();
+
   return (
     <div className="card">
-      <Link to={'/movies/' + movie.id}>
+      <Link to={'/movies/' + movie.id} state={location}>
         <div className="image-wrapper h-96 relative rounded-t-lg overflow-hidden">
           {movie.adult && (
             <div

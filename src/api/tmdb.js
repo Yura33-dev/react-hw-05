@@ -15,7 +15,7 @@ export async function getTrendingMovies() {
   return data;
 }
 
-export async function getMovie(movieId) {
+export async function getMovieById(movieId) {
   const response = await fetch(`${base}/movie/${movieId}`, options);
   const data = await response.json();
   return data;
@@ -50,4 +50,14 @@ export async function getMoviesReviews(movieId) {
   });
 
   return result;
+}
+
+export async function getMovieByName(query) {
+  const response = await fetch(
+    `${base}/search/movie?query=${query}&include_adult=true`,
+    options
+  );
+  const movies = await response.json();
+
+  return movies.results;
 }
